@@ -1,0 +1,12 @@
+version: '3.8'
+
+services:
+  anchor-go-generator:
+    build:
+      context: .
+      args:
+        UID: ${UID:-1000}
+        GID: ${GID:-1000}
+    volumes:
+      - .:/app
+    command: /bin/sh -c "for file in *.json; do anchor-go --idl "$$file" --output "go/$$(basename "$$file" .json)"; done"
