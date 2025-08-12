@@ -15,11 +15,39 @@ func ParseAnyEvent(eventData []byte) (any, error) {
 		return nil, fmt.Errorf("failed to peek event discriminator: %w", err)
 	}
 	switch discriminator {
+	case Event_AdminSetCoinCreatorEvent:
+		value := new(AdminSetCoinCreatorEvent)
+		err := value.UnmarshalWithDecoder(decoder)
+		if err != nil {
+			return nil, fmt.Errorf("failed to unmarshal event as AdminSetCoinCreatorEvent: %w", err)
+		}
+		return value, nil
+	case Event_AdminUpdateTokenIncentivesEvent:
+		value := new(AdminUpdateTokenIncentivesEvent)
+		err := value.UnmarshalWithDecoder(decoder)
+		if err != nil {
+			return nil, fmt.Errorf("failed to unmarshal event as AdminUpdateTokenIncentivesEvent: %w", err)
+		}
+		return value, nil
 	case Event_BuyEvent:
 		value := new(BuyEvent)
 		err := value.UnmarshalWithDecoder(decoder)
 		if err != nil {
 			return nil, fmt.Errorf("failed to unmarshal event as BuyEvent: %w", err)
+		}
+		return value, nil
+	case Event_ClaimTokenIncentivesEvent:
+		value := new(ClaimTokenIncentivesEvent)
+		err := value.UnmarshalWithDecoder(decoder)
+		if err != nil {
+			return nil, fmt.Errorf("failed to unmarshal event as ClaimTokenIncentivesEvent: %w", err)
+		}
+		return value, nil
+	case Event_CloseUserVolumeAccumulatorEvent:
+		value := new(CloseUserVolumeAccumulatorEvent)
+		err := value.UnmarshalWithDecoder(decoder)
+		if err != nil {
+			return nil, fmt.Errorf("failed to unmarshal event as CloseUserVolumeAccumulatorEvent: %w", err)
 		}
 		return value, nil
 	case Event_CollectCoinCreatorFeeEvent:
@@ -64,6 +92,13 @@ func ParseAnyEvent(eventData []byte) (any, error) {
 			return nil, fmt.Errorf("failed to unmarshal event as ExtendAccountEvent: %w", err)
 		}
 		return value, nil
+	case Event_InitUserVolumeAccumulatorEvent:
+		value := new(InitUserVolumeAccumulatorEvent)
+		err := value.UnmarshalWithDecoder(decoder)
+		if err != nil {
+			return nil, fmt.Errorf("failed to unmarshal event as InitUserVolumeAccumulatorEvent: %w", err)
+		}
+		return value, nil
 	case Event_SellEvent:
 		value := new(SellEvent)
 		err := value.UnmarshalWithDecoder(decoder)
@@ -83,6 +118,13 @@ func ParseAnyEvent(eventData []byte) (any, error) {
 		err := value.UnmarshalWithDecoder(decoder)
 		if err != nil {
 			return nil, fmt.Errorf("failed to unmarshal event as SetMetaplexCoinCreatorEvent: %w", err)
+		}
+		return value, nil
+	case Event_SyncUserVolumeAccumulatorEvent:
+		value := new(SyncUserVolumeAccumulatorEvent)
+		err := value.UnmarshalWithDecoder(decoder)
+		if err != nil {
+			return nil, fmt.Errorf("failed to unmarshal event as SyncUserVolumeAccumulatorEvent: %w", err)
 		}
 		return value, nil
 	case Event_UpdateAdminEvent:
@@ -111,6 +153,40 @@ func ParseAnyEvent(eventData []byte) (any, error) {
 	}
 }
 
+func ParseEvent_AdminSetCoinCreatorEvent(eventData []byte) (*AdminSetCoinCreatorEvent, error) {
+	decoder := binary.NewBorshDecoder(eventData)
+	discriminator, err := decoder.ReadDiscriminator()
+	if err != nil {
+		return nil, fmt.Errorf("failed to peek discriminator: %w", err)
+	}
+	if discriminator != Event_AdminSetCoinCreatorEvent {
+		return nil, fmt.Errorf("expected discriminator %v, got %s", Event_AdminSetCoinCreatorEvent, binary.FormatDiscriminator(discriminator))
+	}
+	event := new(AdminSetCoinCreatorEvent)
+	err = event.UnmarshalWithDecoder(decoder)
+	if err != nil {
+		return nil, fmt.Errorf("failed to unmarshal event of type AdminSetCoinCreatorEvent: %w", err)
+	}
+	return event, nil
+}
+
+func ParseEvent_AdminUpdateTokenIncentivesEvent(eventData []byte) (*AdminUpdateTokenIncentivesEvent, error) {
+	decoder := binary.NewBorshDecoder(eventData)
+	discriminator, err := decoder.ReadDiscriminator()
+	if err != nil {
+		return nil, fmt.Errorf("failed to peek discriminator: %w", err)
+	}
+	if discriminator != Event_AdminUpdateTokenIncentivesEvent {
+		return nil, fmt.Errorf("expected discriminator %v, got %s", Event_AdminUpdateTokenIncentivesEvent, binary.FormatDiscriminator(discriminator))
+	}
+	event := new(AdminUpdateTokenIncentivesEvent)
+	err = event.UnmarshalWithDecoder(decoder)
+	if err != nil {
+		return nil, fmt.Errorf("failed to unmarshal event of type AdminUpdateTokenIncentivesEvent: %w", err)
+	}
+	return event, nil
+}
+
 func ParseEvent_BuyEvent(eventData []byte) (*BuyEvent, error) {
 	decoder := binary.NewBorshDecoder(eventData)
 	discriminator, err := decoder.ReadDiscriminator()
@@ -124,6 +200,40 @@ func ParseEvent_BuyEvent(eventData []byte) (*BuyEvent, error) {
 	err = event.UnmarshalWithDecoder(decoder)
 	if err != nil {
 		return nil, fmt.Errorf("failed to unmarshal event of type BuyEvent: %w", err)
+	}
+	return event, nil
+}
+
+func ParseEvent_ClaimTokenIncentivesEvent(eventData []byte) (*ClaimTokenIncentivesEvent, error) {
+	decoder := binary.NewBorshDecoder(eventData)
+	discriminator, err := decoder.ReadDiscriminator()
+	if err != nil {
+		return nil, fmt.Errorf("failed to peek discriminator: %w", err)
+	}
+	if discriminator != Event_ClaimTokenIncentivesEvent {
+		return nil, fmt.Errorf("expected discriminator %v, got %s", Event_ClaimTokenIncentivesEvent, binary.FormatDiscriminator(discriminator))
+	}
+	event := new(ClaimTokenIncentivesEvent)
+	err = event.UnmarshalWithDecoder(decoder)
+	if err != nil {
+		return nil, fmt.Errorf("failed to unmarshal event of type ClaimTokenIncentivesEvent: %w", err)
+	}
+	return event, nil
+}
+
+func ParseEvent_CloseUserVolumeAccumulatorEvent(eventData []byte) (*CloseUserVolumeAccumulatorEvent, error) {
+	decoder := binary.NewBorshDecoder(eventData)
+	discriminator, err := decoder.ReadDiscriminator()
+	if err != nil {
+		return nil, fmt.Errorf("failed to peek discriminator: %w", err)
+	}
+	if discriminator != Event_CloseUserVolumeAccumulatorEvent {
+		return nil, fmt.Errorf("expected discriminator %v, got %s", Event_CloseUserVolumeAccumulatorEvent, binary.FormatDiscriminator(discriminator))
+	}
+	event := new(CloseUserVolumeAccumulatorEvent)
+	err = event.UnmarshalWithDecoder(decoder)
+	if err != nil {
+		return nil, fmt.Errorf("failed to unmarshal event of type CloseUserVolumeAccumulatorEvent: %w", err)
 	}
 	return event, nil
 }
@@ -230,6 +340,23 @@ func ParseEvent_ExtendAccountEvent(eventData []byte) (*ExtendAccountEvent, error
 	return event, nil
 }
 
+func ParseEvent_InitUserVolumeAccumulatorEvent(eventData []byte) (*InitUserVolumeAccumulatorEvent, error) {
+	decoder := binary.NewBorshDecoder(eventData)
+	discriminator, err := decoder.ReadDiscriminator()
+	if err != nil {
+		return nil, fmt.Errorf("failed to peek discriminator: %w", err)
+	}
+	if discriminator != Event_InitUserVolumeAccumulatorEvent {
+		return nil, fmt.Errorf("expected discriminator %v, got %s", Event_InitUserVolumeAccumulatorEvent, binary.FormatDiscriminator(discriminator))
+	}
+	event := new(InitUserVolumeAccumulatorEvent)
+	err = event.UnmarshalWithDecoder(decoder)
+	if err != nil {
+		return nil, fmt.Errorf("failed to unmarshal event of type InitUserVolumeAccumulatorEvent: %w", err)
+	}
+	return event, nil
+}
+
 func ParseEvent_SellEvent(eventData []byte) (*SellEvent, error) {
 	decoder := binary.NewBorshDecoder(eventData)
 	discriminator, err := decoder.ReadDiscriminator()
@@ -277,6 +404,23 @@ func ParseEvent_SetMetaplexCoinCreatorEvent(eventData []byte) (*SetMetaplexCoinC
 	err = event.UnmarshalWithDecoder(decoder)
 	if err != nil {
 		return nil, fmt.Errorf("failed to unmarshal event of type SetMetaplexCoinCreatorEvent: %w", err)
+	}
+	return event, nil
+}
+
+func ParseEvent_SyncUserVolumeAccumulatorEvent(eventData []byte) (*SyncUserVolumeAccumulatorEvent, error) {
+	decoder := binary.NewBorshDecoder(eventData)
+	discriminator, err := decoder.ReadDiscriminator()
+	if err != nil {
+		return nil, fmt.Errorf("failed to peek discriminator: %w", err)
+	}
+	if discriminator != Event_SyncUserVolumeAccumulatorEvent {
+		return nil, fmt.Errorf("expected discriminator %v, got %s", Event_SyncUserVolumeAccumulatorEvent, binary.FormatDiscriminator(discriminator))
+	}
+	event := new(SyncUserVolumeAccumulatorEvent)
+	err = event.UnmarshalWithDecoder(decoder)
+	if err != nil {
+		return nil, fmt.Errorf("failed to unmarshal event of type SyncUserVolumeAccumulatorEvent: %w", err)
 	}
 	return event, nil
 }

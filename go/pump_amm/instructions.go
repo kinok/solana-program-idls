@@ -11,6 +11,148 @@ import (
 	solanago "github.com/gagliardetto/solana-go"
 )
 
+// Builds a "admin_set_coin_creator" instruction.
+// Overrides the coin creator for a canonical pump pool
+func NewAdminSetCoinCreatorInstruction(
+	// Params:
+	coinCreatorParam solanago.PublicKey,
+
+	// Accounts:
+	adminSetCoinCreatorAuthorityAccount solanago.PublicKey,
+	globalConfigAccount solanago.PublicKey,
+	poolAccount solanago.PublicKey,
+	eventAuthorityAccount solanago.PublicKey,
+	programAccount solanago.PublicKey,
+) (solanago.Instruction, error) {
+	buf__ := new(bytes.Buffer)
+	enc__ := binary.NewBorshEncoder(buf__)
+
+	// Encode the instruction discriminator.
+	err := enc__.WriteBytes(Instruction_AdminSetCoinCreator[:], false)
+	if err != nil {
+		return nil, fmt.Errorf("failed to write instruction discriminator: %w", err)
+	}
+	{
+		// Serialize `coinCreatorParam`:
+		err = enc__.Encode(coinCreatorParam)
+		if err != nil {
+			return nil, errors.NewField("coinCreatorParam", err)
+		}
+	}
+	accounts__ := solanago.AccountMetaSlice{}
+
+	// Add the accounts to the instruction.
+	{
+		// Account 0 "admin_set_coin_creator_authority": Read-only, Signer, Required
+		accounts__.Append(solanago.NewAccountMeta(adminSetCoinCreatorAuthorityAccount, false, true))
+		// Account 1 "global_config": Read-only, Non-signer, Required
+		accounts__.Append(solanago.NewAccountMeta(globalConfigAccount, false, false))
+		// Account 2 "pool": Writable, Non-signer, Required
+		accounts__.Append(solanago.NewAccountMeta(poolAccount, true, false))
+		// Account 3 "event_authority": Read-only, Non-signer, Required
+		accounts__.Append(solanago.NewAccountMeta(eventAuthorityAccount, false, false))
+		// Account 4 "program": Read-only, Non-signer, Required
+		accounts__.Append(solanago.NewAccountMeta(programAccount, false, false))
+	}
+
+	// Create the instruction.
+	return solanago.NewInstruction(
+		ProgramID,
+		accounts__,
+		buf__.Bytes(),
+	), nil
+}
+
+// Builds a "admin_update_token_incentives" instruction.
+func NewAdminUpdateTokenIncentivesInstruction(
+	// Params:
+	startTimeParam int64,
+	endTimeParam int64,
+	secondsInADayParam int64,
+	dayNumberParam uint64,
+	tokenSupplyPerDayParam uint64,
+
+	// Accounts:
+	adminAccount solanago.PublicKey,
+	globalConfigAccount solanago.PublicKey,
+	globalVolumeAccumulatorAccount solanago.PublicKey,
+	mintAccount solanago.PublicKey,
+	globalIncentiveTokenAccountAccount solanago.PublicKey,
+	associatedTokenProgramAccount solanago.PublicKey,
+	systemProgramAccount solanago.PublicKey,
+	tokenProgramAccount solanago.PublicKey,
+	eventAuthorityAccount solanago.PublicKey,
+	programAccount solanago.PublicKey,
+) (solanago.Instruction, error) {
+	buf__ := new(bytes.Buffer)
+	enc__ := binary.NewBorshEncoder(buf__)
+
+	// Encode the instruction discriminator.
+	err := enc__.WriteBytes(Instruction_AdminUpdateTokenIncentives[:], false)
+	if err != nil {
+		return nil, fmt.Errorf("failed to write instruction discriminator: %w", err)
+	}
+	{
+		// Serialize `startTimeParam`:
+		err = enc__.Encode(startTimeParam)
+		if err != nil {
+			return nil, errors.NewField("startTimeParam", err)
+		}
+		// Serialize `endTimeParam`:
+		err = enc__.Encode(endTimeParam)
+		if err != nil {
+			return nil, errors.NewField("endTimeParam", err)
+		}
+		// Serialize `secondsInADayParam`:
+		err = enc__.Encode(secondsInADayParam)
+		if err != nil {
+			return nil, errors.NewField("secondsInADayParam", err)
+		}
+		// Serialize `dayNumberParam`:
+		err = enc__.Encode(dayNumberParam)
+		if err != nil {
+			return nil, errors.NewField("dayNumberParam", err)
+		}
+		// Serialize `tokenSupplyPerDayParam`:
+		err = enc__.Encode(tokenSupplyPerDayParam)
+		if err != nil {
+			return nil, errors.NewField("tokenSupplyPerDayParam", err)
+		}
+	}
+	accounts__ := solanago.AccountMetaSlice{}
+
+	// Add the accounts to the instruction.
+	{
+		// Account 0 "admin": Writable, Signer, Required
+		accounts__.Append(solanago.NewAccountMeta(adminAccount, true, true))
+		// Account 1 "global_config": Read-only, Non-signer, Required
+		accounts__.Append(solanago.NewAccountMeta(globalConfigAccount, false, false))
+		// Account 2 "global_volume_accumulator": Writable, Non-signer, Required
+		accounts__.Append(solanago.NewAccountMeta(globalVolumeAccumulatorAccount, true, false))
+		// Account 3 "mint": Read-only, Non-signer, Required
+		accounts__.Append(solanago.NewAccountMeta(mintAccount, false, false))
+		// Account 4 "global_incentive_token_account": Writable, Non-signer, Required
+		accounts__.Append(solanago.NewAccountMeta(globalIncentiveTokenAccountAccount, true, false))
+		// Account 5 "associated_token_program": Read-only, Non-signer, Required, Address: ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL
+		accounts__.Append(solanago.NewAccountMeta(associatedTokenProgramAccount, false, false))
+		// Account 6 "system_program": Read-only, Non-signer, Required
+		accounts__.Append(solanago.NewAccountMeta(systemProgramAccount, false, false))
+		// Account 7 "token_program": Read-only, Non-signer, Required
+		accounts__.Append(solanago.NewAccountMeta(tokenProgramAccount, false, false))
+		// Account 8 "event_authority": Read-only, Non-signer, Required
+		accounts__.Append(solanago.NewAccountMeta(eventAuthorityAccount, false, false))
+		// Account 9 "program": Read-only, Non-signer, Required
+		accounts__.Append(solanago.NewAccountMeta(programAccount, false, false))
+	}
+
+	// Create the instruction.
+	return solanago.NewInstruction(
+		ProgramID,
+		accounts__,
+		buf__.Bytes(),
+	), nil
+}
+
 // Builds a "buy" instruction.
 func NewBuyInstruction(
 	// Params:
@@ -37,6 +179,9 @@ func NewBuyInstruction(
 	programAccount solanago.PublicKey,
 	coinCreatorVaultAtaAccount solanago.PublicKey,
 	coinCreatorVaultAuthorityAccount solanago.PublicKey,
+	globalVolumeAccumulatorAccount solanago.PublicKey,
+	userVolumeAccumulatorAccount solanago.PublicKey,
+	userAccTargetAccount solanago.PublicKey,
 ) (solanago.Instruction, error) {
 	buf__ := new(bytes.Buffer)
 	enc__ := binary.NewBorshEncoder(buf__)
@@ -100,6 +245,12 @@ func NewBuyInstruction(
 		accounts__.Append(solanago.NewAccountMeta(coinCreatorVaultAtaAccount, true, false))
 		// Account 18 "coin_creator_vault_authority": Read-only, Non-signer, Required
 		accounts__.Append(solanago.NewAccountMeta(coinCreatorVaultAuthorityAccount, false, false))
+		// Account 19 "global_volume_accumulator": Writable, Non-signer, Required
+		accounts__.Append(solanago.NewAccountMeta(globalVolumeAccumulatorAccount, true, false))
+		// Account 20 "user_volume_accumulator": Writable, Non-signer, Required
+		accounts__.Append(solanago.NewAccountMeta(userVolumeAccumulatorAccount, true, false))
+		// Account 21 "user_acc_target": Writable, Signer, Required
+		accounts__.Append(solanago.NewAccountMeta(userAccTargetAccount, true, true))
 	}
 
 	// Create the instruction.
@@ -107,6 +258,88 @@ func NewBuyInstruction(
 		ProgramID,
 		accounts__,
 		buf__.Bytes(),
+	), nil
+}
+
+// Builds a "claim_token_incentives" instruction.
+func NewClaimTokenIncentivesInstruction(
+	userAccount solanago.PublicKey,
+	userAtaAccount solanago.PublicKey,
+	globalVolumeAccumulatorAccount solanago.PublicKey,
+	globalIncentiveTokenAccountAccount solanago.PublicKey,
+	userVolumeAccumulatorAccount solanago.PublicKey,
+	mintAccount solanago.PublicKey,
+	tokenProgramAccount solanago.PublicKey,
+	systemProgramAccount solanago.PublicKey,
+	associatedTokenProgramAccount solanago.PublicKey,
+	eventAuthorityAccount solanago.PublicKey,
+	programAccount solanago.PublicKey,
+	payerAccount solanago.PublicKey,
+) (solanago.Instruction, error) {
+	accounts__ := solanago.AccountMetaSlice{}
+
+	// Add the accounts to the instruction.
+	{
+		// Account 0 "user": Read-only, Non-signer, Required
+		accounts__.Append(solanago.NewAccountMeta(userAccount, false, false))
+		// Account 1 "user_ata": Writable, Non-signer, Required
+		accounts__.Append(solanago.NewAccountMeta(userAtaAccount, true, false))
+		// Account 2 "global_volume_accumulator": Read-only, Non-signer, Required
+		accounts__.Append(solanago.NewAccountMeta(globalVolumeAccumulatorAccount, false, false))
+		// Account 3 "global_incentive_token_account": Writable, Non-signer, Required
+		accounts__.Append(solanago.NewAccountMeta(globalIncentiveTokenAccountAccount, true, false))
+		// Account 4 "user_volume_accumulator": Writable, Non-signer, Required
+		accounts__.Append(solanago.NewAccountMeta(userVolumeAccumulatorAccount, true, false))
+		// Account 5 "mint": Read-only, Non-signer, Required
+		accounts__.Append(solanago.NewAccountMeta(mintAccount, false, false))
+		// Account 6 "token_program": Read-only, Non-signer, Required
+		accounts__.Append(solanago.NewAccountMeta(tokenProgramAccount, false, false))
+		// Account 7 "system_program": Read-only, Non-signer, Required
+		accounts__.Append(solanago.NewAccountMeta(systemProgramAccount, false, false))
+		// Account 8 "associated_token_program": Read-only, Non-signer, Required, Address: ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL
+		accounts__.Append(solanago.NewAccountMeta(associatedTokenProgramAccount, false, false))
+		// Account 9 "event_authority": Read-only, Non-signer, Required
+		accounts__.Append(solanago.NewAccountMeta(eventAuthorityAccount, false, false))
+		// Account 10 "program": Read-only, Non-signer, Required
+		accounts__.Append(solanago.NewAccountMeta(programAccount, false, false))
+		// Account 11 "payer": Writable, Signer, Required
+		accounts__.Append(solanago.NewAccountMeta(payerAccount, true, true))
+	}
+
+	// Create the instruction.
+	return solanago.NewInstruction(
+		ProgramID,
+		accounts__,
+		nil,
+	), nil
+}
+
+// Builds a "close_user_volume_accumulator" instruction.
+func NewCloseUserVolumeAccumulatorInstruction(
+	userAccount solanago.PublicKey,
+	userVolumeAccumulatorAccount solanago.PublicKey,
+	eventAuthorityAccount solanago.PublicKey,
+	programAccount solanago.PublicKey,
+) (solanago.Instruction, error) {
+	accounts__ := solanago.AccountMetaSlice{}
+
+	// Add the accounts to the instruction.
+	{
+		// Account 0 "user": Writable, Signer, Required
+		accounts__.Append(solanago.NewAccountMeta(userAccount, true, true))
+		// Account 1 "user_volume_accumulator": Writable, Non-signer, Required
+		accounts__.Append(solanago.NewAccountMeta(userVolumeAccumulatorAccount, true, false))
+		// Account 2 "event_authority": Read-only, Non-signer, Required
+		accounts__.Append(solanago.NewAccountMeta(eventAuthorityAccount, false, false))
+		// Account 3 "program": Read-only, Non-signer, Required
+		accounts__.Append(solanago.NewAccountMeta(programAccount, false, false))
+	}
+
+	// Create the instruction.
+	return solanago.NewInstruction(
+		ProgramID,
+		accounts__,
+		nil,
 	), nil
 }
 
@@ -129,8 +362,8 @@ func NewCollectCoinCreatorFeeInstruction(
 		accounts__.Append(solanago.NewAccountMeta(quoteMintAccount, false, false))
 		// Account 1 "quote_token_program": Read-only, Non-signer, Required
 		accounts__.Append(solanago.NewAccountMeta(quoteTokenProgramAccount, false, false))
-		// Account 2 "coin_creator": Read-only, Signer, Required
-		accounts__.Append(solanago.NewAccountMeta(coinCreatorAccount, false, true))
+		// Account 2 "coin_creator": Read-only, Non-signer, Required
+		accounts__.Append(solanago.NewAccountMeta(coinCreatorAccount, false, false))
 		// Account 3 "coin_creator_vault_authority": Read-only, Non-signer, Required
 		accounts__.Append(solanago.NewAccountMeta(coinCreatorVaultAuthorityAccount, false, false))
 		// Account 4 "coin_creator_vault_ata": Writable, Non-signer, Required
@@ -158,6 +391,7 @@ func NewCreateConfigInstruction(
 	protocolFeeBasisPointsParam uint64,
 	protocolFeeRecipientsParam [8]solanago.PublicKey,
 	coinCreatorFeeBasisPointsParam uint64,
+	adminSetCoinCreatorAuthorityParam solanago.PublicKey,
 
 	// Accounts:
 	adminAccount solanago.PublicKey,
@@ -194,6 +428,11 @@ func NewCreateConfigInstruction(
 		err = enc__.Encode(coinCreatorFeeBasisPointsParam)
 		if err != nil {
 			return nil, errors.NewField("coinCreatorFeeBasisPointsParam", err)
+		}
+		// Serialize `adminSetCoinCreatorAuthorityParam`:
+		err = enc__.Encode(adminSetCoinCreatorAuthorityParam)
+		if err != nil {
+			return nil, errors.NewField("adminSetCoinCreatorAuthorityParam", err)
 		}
 	}
 	accounts__ := solanago.AccountMetaSlice{}
@@ -525,6 +764,41 @@ func NewExtendAccountInstruction(
 	), nil
 }
 
+// Builds a "init_user_volume_accumulator" instruction.
+func NewInitUserVolumeAccumulatorInstruction(
+	payerAccount solanago.PublicKey,
+	userAccount solanago.PublicKey,
+	userVolumeAccumulatorAccount solanago.PublicKey,
+	systemProgramAccount solanago.PublicKey,
+	eventAuthorityAccount solanago.PublicKey,
+	programAccount solanago.PublicKey,
+) (solanago.Instruction, error) {
+	accounts__ := solanago.AccountMetaSlice{}
+
+	// Add the accounts to the instruction.
+	{
+		// Account 0 "payer": Writable, Signer, Required
+		accounts__.Append(solanago.NewAccountMeta(payerAccount, true, true))
+		// Account 1 "user": Read-only, Non-signer, Required
+		accounts__.Append(solanago.NewAccountMeta(userAccount, false, false))
+		// Account 2 "user_volume_accumulator": Writable, Non-signer, Required
+		accounts__.Append(solanago.NewAccountMeta(userVolumeAccumulatorAccount, true, false))
+		// Account 3 "system_program": Read-only, Non-signer, Required
+		accounts__.Append(solanago.NewAccountMeta(systemProgramAccount, false, false))
+		// Account 4 "event_authority": Read-only, Non-signer, Required
+		accounts__.Append(solanago.NewAccountMeta(eventAuthorityAccount, false, false))
+		// Account 5 "program": Read-only, Non-signer, Required
+		accounts__.Append(solanago.NewAccountMeta(programAccount, false, false))
+	}
+
+	// Create the instruction.
+	return solanago.NewInstruction(
+		ProgramID,
+		accounts__,
+		nil,
+	), nil
+}
+
 // Builds a "sell" instruction.
 func NewSellInstruction(
 	// Params:
@@ -657,6 +931,38 @@ func NewSetCoinCreatorInstruction(
 	), nil
 }
 
+// Builds a "sync_user_volume_accumulator" instruction.
+func NewSyncUserVolumeAccumulatorInstruction(
+	userAccount solanago.PublicKey,
+	globalVolumeAccumulatorAccount solanago.PublicKey,
+	userVolumeAccumulatorAccount solanago.PublicKey,
+	eventAuthorityAccount solanago.PublicKey,
+	programAccount solanago.PublicKey,
+) (solanago.Instruction, error) {
+	accounts__ := solanago.AccountMetaSlice{}
+
+	// Add the accounts to the instruction.
+	{
+		// Account 0 "user": Read-only, Non-signer, Required
+		accounts__.Append(solanago.NewAccountMeta(userAccount, false, false))
+		// Account 1 "global_volume_accumulator": Read-only, Non-signer, Required
+		accounts__.Append(solanago.NewAccountMeta(globalVolumeAccumulatorAccount, false, false))
+		// Account 2 "user_volume_accumulator": Writable, Non-signer, Required
+		accounts__.Append(solanago.NewAccountMeta(userVolumeAccumulatorAccount, true, false))
+		// Account 3 "event_authority": Read-only, Non-signer, Required
+		accounts__.Append(solanago.NewAccountMeta(eventAuthorityAccount, false, false))
+		// Account 4 "program": Read-only, Non-signer, Required
+		accounts__.Append(solanago.NewAccountMeta(programAccount, false, false))
+	}
+
+	// Create the instruction.
+	return solanago.NewInstruction(
+		ProgramID,
+		accounts__,
+		nil,
+	), nil
+}
+
 // Builds a "update_admin" instruction.
 func NewUpdateAdminInstruction(
 	adminAccount solanago.PublicKey,
@@ -696,6 +1002,7 @@ func NewUpdateFeeConfigInstruction(
 	protocolFeeBasisPointsParam uint64,
 	protocolFeeRecipientsParam [8]solanago.PublicKey,
 	coinCreatorFeeBasisPointsParam uint64,
+	adminSetCoinCreatorAuthorityParam solanago.PublicKey,
 
 	// Accounts:
 	adminAccount solanago.PublicKey,
@@ -731,6 +1038,11 @@ func NewUpdateFeeConfigInstruction(
 		err = enc__.Encode(coinCreatorFeeBasisPointsParam)
 		if err != nil {
 			return nil, errors.NewField("coinCreatorFeeBasisPointsParam", err)
+		}
+		// Serialize `adminSetCoinCreatorAuthorityParam`:
+		err = enc__.Encode(adminSetCoinCreatorAuthorityParam)
+		if err != nil {
+			return nil, errors.NewField("adminSetCoinCreatorAuthorityParam", err)
 		}
 	}
 	accounts__ := solanago.AccountMetaSlice{}

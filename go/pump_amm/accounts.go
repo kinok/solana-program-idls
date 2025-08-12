@@ -29,11 +29,25 @@ func ParseAnyAccount(accountData []byte) (any, error) {
 			return nil, fmt.Errorf("failed to unmarshal account as GlobalConfig: %w", err)
 		}
 		return value, nil
+	case Account_GlobalVolumeAccumulator:
+		value := new(GlobalVolumeAccumulator)
+		err := value.UnmarshalWithDecoder(decoder)
+		if err != nil {
+			return nil, fmt.Errorf("failed to unmarshal account as GlobalVolumeAccumulator: %w", err)
+		}
+		return value, nil
 	case Account_Pool:
 		value := new(Pool)
 		err := value.UnmarshalWithDecoder(decoder)
 		if err != nil {
 			return nil, fmt.Errorf("failed to unmarshal account as Pool: %w", err)
+		}
+		return value, nil
+	case Account_UserVolumeAccumulator:
+		value := new(UserVolumeAccumulator)
+		err := value.UnmarshalWithDecoder(decoder)
+		if err != nil {
+			return nil, fmt.Errorf("failed to unmarshal account as UserVolumeAccumulator: %w", err)
 		}
 		return value, nil
 	default:
@@ -75,6 +89,23 @@ func ParseAccount_GlobalConfig(accountData []byte) (*GlobalConfig, error) {
 	return acc, nil
 }
 
+func ParseAccount_GlobalVolumeAccumulator(accountData []byte) (*GlobalVolumeAccumulator, error) {
+	decoder := binary.NewBorshDecoder(accountData)
+	discriminator, err := decoder.ReadDiscriminator()
+	if err != nil {
+		return nil, fmt.Errorf("failed to peek discriminator: %w", err)
+	}
+	if discriminator != Account_GlobalVolumeAccumulator {
+		return nil, fmt.Errorf("expected discriminator %v, got %s", Account_GlobalVolumeAccumulator, binary.FormatDiscriminator(discriminator))
+	}
+	acc := new(GlobalVolumeAccumulator)
+	err = acc.UnmarshalWithDecoder(decoder)
+	if err != nil {
+		return nil, fmt.Errorf("failed to unmarshal account of type GlobalVolumeAccumulator: %w", err)
+	}
+	return acc, nil
+}
+
 func ParseAccount_Pool(accountData []byte) (*Pool, error) {
 	decoder := binary.NewBorshDecoder(accountData)
 	discriminator, err := decoder.ReadDiscriminator()
@@ -88,6 +119,23 @@ func ParseAccount_Pool(accountData []byte) (*Pool, error) {
 	err = acc.UnmarshalWithDecoder(decoder)
 	if err != nil {
 		return nil, fmt.Errorf("failed to unmarshal account of type Pool: %w", err)
+	}
+	return acc, nil
+}
+
+func ParseAccount_UserVolumeAccumulator(accountData []byte) (*UserVolumeAccumulator, error) {
+	decoder := binary.NewBorshDecoder(accountData)
+	discriminator, err := decoder.ReadDiscriminator()
+	if err != nil {
+		return nil, fmt.Errorf("failed to peek discriminator: %w", err)
+	}
+	if discriminator != Account_UserVolumeAccumulator {
+		return nil, fmt.Errorf("expected discriminator %v, got %s", Account_UserVolumeAccumulator, binary.FormatDiscriminator(discriminator))
+	}
+	acc := new(UserVolumeAccumulator)
+	err = acc.UnmarshalWithDecoder(decoder)
+	if err != nil {
+		return nil, fmt.Errorf("failed to unmarshal account of type UserVolumeAccumulator: %w", err)
 	}
 	return acc, nil
 }
